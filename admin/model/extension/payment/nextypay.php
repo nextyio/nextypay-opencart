@@ -330,7 +330,7 @@ class ModelExtensionPaymentNextypay extends Model {
   }
 
   public function uninstall() {
-    //$this->delete_blocks_table_db();
+    $this->delete_blocks_table_db();
     $this->delete_transactions_table_db();
     $this->delete_order_total_in_coin_table_db();
   }
