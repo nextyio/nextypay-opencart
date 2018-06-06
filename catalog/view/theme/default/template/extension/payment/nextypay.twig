@@ -1,0 +1,41 @@
+<h2>{{ instruction }}</h2>
+<p><b>{{ description }}</b></p>
+<div class="well well-sm">
+  <p>{{ walletAddress }}</p>
+  <p>{{ exchangeAPI }}</p>
+  <p>{{ order_id }}</p>
+  <p>{{ order_status_id }}</p>
+  <p>{{ currency_code }}</p>
+  <p>{{ orderDetails_json}}</p>
+</div>
+
+<div class="buttons">
+  <div class="pull-right">
+    <input type="button" value="{{ button_confirm }}" id="button-confirm" data-loading-text="{{ text_loading }}" class="btn btn-primary" />
+  </div>
+</div>
+
+<script type="text/javascript" charset="utf-8"><!--
+$('#button-confirm').on('click', function() {
+	$.ajax({
+		url: 'index.php?route=extension/payment/nextypay/confirm',
+		dataType: 'json',
+		beforeSend: function() {
+			$('#button-confirm').button('loading');
+		},
+		complete: function() {
+			$('#button-confirm').button('reset');
+		},
+		success: function(json) {
+			if (json['redirect']) {
+				location = json['redirect'];
+			}
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      //alert( xhr.responseText);
+      //location = json['redirect'];
+		}
+	});
+});
+</script>
