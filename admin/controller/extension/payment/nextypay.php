@@ -20,9 +20,7 @@
 
    public function install() {
       $this->load->language('extension/payment/nextypay');
-
       $this->document->setTitle($this->language->get('heading_title'));
-
       $this->load->model('extension/payment/nextypay');
       $this->load->model('setting/extension');
       $nextypay_name='payment_nextypay';
@@ -30,55 +28,30 @@
       //$this->load->model('extension/payment');
 
       if ($this->install_validate()) {
+        //create custom tables
         $this->model_extension_payment_nextypay->install();
-
-        $this->load->model('user/user_group');
-
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'access', 'payment/' . $this->request->get['extension']);
-        $this->model_user_user_group->addPermission($this->user->getGroupId(), 'modify', 'payment/' . $this->request->get['extension']);
-
-        // Call install method if it exists
-        $this->load->controller('module/' . $this->request->get['extension'] . '/install');
-
-        $data['success'] = $this->language->get('text_success');
-
-        //$this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
-        $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+        //create OC tables
+        $this->model_setting_extension->install("payment",$nextypay_name);
       }
 
-      //$this->getList();
     }
 
     public function uninstall() {
-      $nextypay_name='payment_nextypay';
+    $nextypay_name='payment_nextypay';
     $this->load->language('extension/payment/nextypay');
-
     $this->document->setTitle($this->language->get('heading_title'));
-
     $this->load->model('extension/payment/nextypay');
     $this->load->model('setting/extension');
 
     //$this->load->model('extension/payment');
 
     if ($this->install_validate()) {
+      //delete custom tables
       $this->model_extension_payment_nextypay->uninstall();
-
-    //  $this->model_extension_payment->deleteModulesByCode($this->request->get['extension']);
-
-      $this->load->model('setting/setting');
-
-      $this->model_setting_extension->uninstall("payment",$this->$nextypay_name);
-    //$this->model_setting_setting->editSetting($nextypay_name, $this->request->post);
-
-      // Call uninstall method if it exists
-      $this->load->controller('payment/' . $this->request->get['extension'] . '/uninstall');
-
-      $data['success'] = $this->language->get('text_success');
-
-      $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+      //delete OC tables
+      $this->model_setting_extension->uninstall("payment",$nextypay_name);
     }
 
-    //$this->getList();
   }
 
    public function index() {
