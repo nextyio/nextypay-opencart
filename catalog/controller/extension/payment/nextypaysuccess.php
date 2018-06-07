@@ -15,9 +15,12 @@ class ControllerExtensionPaymentNextypaysuccess extends Controller {
     }
 	public function index() {
 		$this->load->language('extension/payment/nextypaysuccess');
-    $data['order_id']=$this->session->data['order_id'];
+
     /////////////////////////////////////////////////////////
     $this->load->model('checkout/order');
+
+    if (!isset($this->session->data['order_id'])) exit;
+    $data['order_id']=$this->session->data['order_id'];
 
     $data['orderDetails'] = $this->model_checkout_order->getOrder($data['order_id']);
     $data['orderDetails_json'] = json_encode($this->model_checkout_order->getOrder($data['order_id']));
@@ -26,18 +29,48 @@ class ControllerExtensionPaymentNextypaysuccess extends Controller {
     $nextypay_prefix=$nextypay_name.'_';
     //$data['walletAddress']=$this->config->get($nextypay_prefix.'walletAddress');
     $data['walletAddress']=$this->config->get($nextypay_prefix.'walletAddress');
+    $data['min_blocks_saved_db']=$this->config->get($nextypay_prefix.'min_blocks_saved_db');
+    $data['max_blocks_saved_db']=$this->config->get($nextypay_prefix.'max_blocks_saved_db');
+    $data['blocks_loaded_each_request']=$this->config->get($nextypay_prefix.'blocks_loaded_each_request');
+
     $data['currency_code']=$data['orderDetails']['currency_code'];
     $data['total']=$data['orderDetails']['total'];
     $data['store_name']=$data['orderDetails']['store_name'];
     $data['store_url']=$data['orderDetails']['store_url'];
-    $data['uoid']=$data['order_id']."_".$data['orderDetails']['store_url'].$data['orderDetails']['store_name'];
+    $data['order_id_prefix']=$data['orderDetails']['store_url'].$data['orderDetails']['store_name'];
+    $data['uoid']=$data['order_id']."_".$data['order_id_prefix'];
     $data['test']=$data['currency_code']." ".$data['total']." ".$data['uoid'];
 
     $QRtext='{"walletaddress":"'.$data['walletAddress'].'","uoid":"'.$data['uoid'].'","amount":"'.$data['total'].'"}';
-    $QRtext_hex="0x".$this->strToHex($QRtext);
+
+    //Get help-functions
+    $this->load->library('nextypayblockchain');
+    $obj_blockchain = Nextypayblockchain::get_instance($this->registry);
+
+    $this->load->library('nextypayexchange');
+    $obj_exchange = Nextypayexchange::get_instance($this->registry);
+
+    $this->load->library('nextypayfunctions');
+    $obj_functions = Nextypayfunctions::get_instance($this->registry);
+
+    $this->load->library('nextypayupdatedb');
+    $obj_updatedb = Nextypayupdatedb::get_instance($this->registry,$obj_blockchain,$obj_functions);
+
+    $obj_updatedb->set_connection($this->db);
+    $obj_updatedb->set_includes($obj_blockchain,$obj_functions);
+    $obj_updatedb->set_backend_settings(DB_PREFIX."nextypay_",$data['currency_code'],$data['walletAddress'],$data['order_id_prefix'],
+    $data['min_blocks_saved_db'],$data['max_blocks_saved_db'],  $data['blocks_loaded_each_request']);
+
+  //$obj_updatedb->updatedb();
+
+    //////////////////////////////////////////////////////////////////
+    $QRtext_hex="0x".$obj_functions->strToHex($QRtext);
     $QRtextencode= urlencode ( $QRtext );
     $data['QRtextencode']=$QRtextencode;
     $data['QRtext']=$QRtext;
+    $data['QRtext_hex']=$QRtext_hex;
+    $data['test']=$obj_updatedb->updatedb();
+    //$data['test']=json_encode($data['test']);
 
     /////////////////////////////////////////////////////////
 		if (isset($this->session->data['order_id'])) {

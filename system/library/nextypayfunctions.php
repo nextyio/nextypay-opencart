@@ -43,5 +43,10 @@ class Nextypayfunctions{
       return $string;
 
   }
+
+  public function key_filter($key){
+    $delete_list=array('"','“','″','”',' ','{','}');
+    return str_replace($delete_list, '',$key);
+  }
 }
 ?>
