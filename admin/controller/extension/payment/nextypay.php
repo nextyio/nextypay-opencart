@@ -23,7 +23,7 @@
       $this->document->setTitle($this->language->get('heading_title'));
       $this->load->model('extension/payment/nextypay');
       $this->load->model('setting/extension');
-      $nextypay_name='payment_nextypay';
+      //$nextypay_name='payment_nextypay';
 
       //$this->load->model('extension/payment');
 
@@ -31,13 +31,13 @@
         //create custom tables
         $this->model_extension_payment_nextypay->install();
         //create OC tables
-        $this->model_setting_extension->install("payment",$nextypay_name);
+        $this->model_setting_extension->install("payment",$this->nextypay_name);
       }
 
     }
 
     public function uninstall() {
-    $nextypay_name='payment_nextypay';
+    //$nextypay_name='payment_nextypay';
     $this->load->language('extension/payment/nextypay');
     $this->document->setTitle($this->language->get('heading_title'));
     $this->load->model('extension/payment/nextypay');
@@ -49,95 +49,84 @@
       //delete custom tables
       $this->model_extension_payment_nextypay->uninstall();
       //delete OC tables
-      $this->model_setting_extension->uninstall("payment",$nextypay_name);
+      $this->model_setting_extension->uninstall("payment",$this->nextypay_name);
     }
 
   }
 
-   public function index() {
-     $this->language->load('extension/payment/nextypay');
-     $this->document->setTitle($this->language->get('heading_title'));
-     $this->load->model('setting/setting');
-     $nextypay_name='payment_nextypay';
-     $nextypay_prefix=$nextypay_name.'_';
-     $data['nextypay_prefix']=$nextypay_prefix;
-     $this->document->addScript('view/javascript/nextypay/nextypay.js');
+  private function set_navi(&$data){
+    $data['breadcrumbs'] = array();
 
-     if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+    $data['breadcrumbs'][] = array(
+      'text' => $this->language->get('text_home'),
+      'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+    );
 
-       $this->model_setting_setting->editSetting($nextypay_name, $this->request->post);
+    $data['breadcrumbs'][] = array(
+      'text' => $this->language->get('text_extension'),
+      'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
+    );
 
-       $this->session->data['success'] = $this->language->get('text_success');
+    $data['breadcrumbs'][] = array(
+      'text' => $this->language->get('heading_title'),
+      'href' => $this->url->link('extension/payment/nextypay', 'user_token=' . $this->session->data['user_token'], true)
+    );
+  }
 
-       $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
-     }
+  private function set_backend_template(&$data){
 
-     $data['breadcrumbs'] = array();
+    $data['heading_title'] = $this->language->get('heading_title');
 
-     $data['breadcrumbs'][] = array(
-       'text' => $this->language->get('text_home'),
-       'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
-     );
+    $data['entry_title'] = $this->language->get('entry_title');
+    $data['entry_order_status'] = $this->language->get('entry_order_status');
+    $data['entry_description'] = $this->language->get('entry_description');
+    $data['entry_instruction'] = $this->language->get('entry_instruction');
+    $data['entry_walletAddress'] = $this->language->get('entry_walletAddress');
+    $data['entry_exchangeAPI'] = $this->language->get('entry_exchangeAPI');
+    $data['entry_endPointAddress'] = $this->language->get('entry_endPointAddress');
+    $data['entry_min_blocks_saved_db'] = $this->language->get('entry_min_blocks_saved_db');
+    $data['entry_max_blocks_saved_db'] = $this->language->get('entry_max_blocks_saved_db');
+    $data['entry_blocks_loaded_each_request'] = $this->language->get('entry_blocks_loaded_each_request');
 
-     $data['breadcrumbs'][] = array(
-       'text' => $this->language->get('text_extension'),
-       'href' => $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true)
-     );
+    $data['button_save'] = $this->language->get('text_button_save');
+    $data['button_cancel'] = $this->language->get('text_button_cancel');
+    $data['text_enabled'] = $this->language->get('text_enabled');
+    $data['text_disabled'] = $this->language->get('text_disabled');
+    $data['entry_status'] = $this->language->get('entry_status');
 
-     $data['breadcrumbs'][] = array(
-       'text' => $this->language->get('heading_title'),
-       'href' => $this->url->link('extension/payment/nextypay', 'user_token=' . $this->session->data['user_token'], true)
-     );
+    $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
+    $data['action'] = $this->url->link('extension/payment/nextypay', 'user_token=' . $this->session->data['user_token'], 'SSL');
 
-     $data['heading_title'] = $this->language->get('heading_title');
+  }
 
-     $data['entry_title'] = $this->language->get('entry_title');
-     $data['entry_order_status'] = $this->language->get('entry_order_status');
-     $data['entry_description'] = $this->language->get('entry_description');
-     $data['entry_instruction'] = $this->language->get('entry_instruction');
-     $data['entry_walletAddress'] = $this->language->get('entry_walletAddress');
-     $data['entry_exchangeAPI'] = $this->language->get('entry_exchangeAPI');
-     $data['entry_endPointAddress'] = $this->language->get('entry_endPointAddress');
-     $data['entry_min_blocks_saved_db'] = $this->language->get('entry_min_blocks_saved_db');
-     $data['entry_max_blocks_saved_db'] = $this->language->get('entry_max_blocks_saved_db');
-     $data['entry_blocks_loaded_each_request'] = $this->language->get('entry_blocks_loaded_each_request');
-
-     $data['button_save'] = $this->language->get('text_button_save');
-     $data['button_cancel'] = $this->language->get('text_button_cancel');
-     $data['text_enabled'] = $this->language->get('text_enabled');
-     $data['text_disabled'] = $this->language->get('text_disabled');
-     $data['entry_status'] = $this->language->get('entry_status');
-
-     $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true);
-     $data['action'] = $this->url->link('extension/payment/nextypay', 'user_token=' . $this->session->data['user_token'], 'SSL');
-
-
-     $data['user_token'] = $this->session->data['user_token'];
-
-    if (isset($this->error['walletAddress_warning'])) {
-        $data['error_walletAddress_warning'] = $this->error['walletAddress_warning'];
+  private function set_errors(&$data,$error){
+    if (isset($error['walletAddress_warning'])) {
+        $data['error_walletAddress_warning'] = $error['walletAddress_warning'];
     } else {
         $data['error_walletAddress_warning'] = '';
     }
 
-    if (isset($this->error['exchangeAPI_warning'])) {
-       $data['error_exchangeAPI_warning'] = $this->error['exchangeAPI_warning'];
+    if (isset($error['exchangeAPI_warning'])) {
+       $data['error_exchangeAPI_warning'] = $error['exchangeAPI_warning'];
     } else {
        $data['error_exchangeAPI_warning'] = '';
     }
 
-    if (isset($this->error['endPointAddress_warning'])) {
-       $data['error_endPointAddress_warning'] = $this->error['endPointAddress_warning'];
+    if (isset($error['endPointAddress_warning'])) {
+       $data['error_endPointAddress_warning'] = $error['endPointAddress_warning'];
     } else {
        $data['error_endPointAddress_warning'] = '';
     }
 
-    if (isset($this->error['blocks_info_warning'])) {
-       $data['error_blocks_info_warning'] = $this->error['blocks_info_warning'];
+    if (isset($error['blocks_info_warning'])) {
+       $data['error_blocks_info_warning'] = $error['blocks_info_warning'];
     } else {
        $data['error_blocks_info_warning'] = '';
     }
+  }
 
+  private function set_backend_settings_value(&$data){
+    $nextypay_prefix=$this->nextypay_name.'_';
     if (isset($this->request->post[$nextypay_prefix.'title'])) {
       $data['title'] = $this->request->post[$nextypay_prefix.'title'];
     } else {
@@ -203,6 +192,34 @@
     } else {
       $data['order_status_id'] = $this->config->get($nextypay_prefix.'order_status_id');
     }
+  }
+
+   public function index() {
+     $this->language->load('extension/payment/nextypay');
+     $this->document->setTitle($this->language->get('heading_title'));
+     $this->load->model('setting/setting');
+     $nextypay_name=$this->nextypay_name;
+     $nextypay_prefix=$nextypay_name.'_';
+     $data['nextypay_prefix']=$nextypay_prefix;
+     $this->document->addScript('view/javascript/nextypay/nextypay.js');
+
+     if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+
+       $this->model_setting_setting->editSetting($nextypay_name, $this->request->post);
+
+       $this->session->data['success'] = $this->language->get('text_success');
+
+       $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=payment', true));
+     }
+
+     $this->set_navi($data);
+     $this->set_backend_template($data);
+
+     $data['user_token'] = $this->session->data['user_token'];
+
+     $this->set_errors($data,$this->error);
+
+     $this->set_backend_settings_value($data);
 
      $this->load->model('localisation/order_status');
      $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
