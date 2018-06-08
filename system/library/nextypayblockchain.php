@@ -1,8 +1,8 @@
 <?php
-class nextypayblockchain
+class Nextypayblockchain
 {
 
-  private static $instance;
+  public static $instance;
 
 /**
  * @param  object  $registry  Registry Object
@@ -15,7 +15,7 @@ class nextypayblockchain
 
     return static::$instance;
   }
-  
+
 	public function get_max_block_number($url){
 		$fields = array(
 		'jsonrpc' => "2.0",

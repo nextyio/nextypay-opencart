@@ -15,17 +15,96 @@
     {% set class = 'col-sm-12' %}
     {% endif %}
     <div id="content" class="{{ class }}">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {{ text_message }}
-      <h1>{{test}}</h1>
-      <h1>{{QRtext}}</h1>
-      <h1>{{QRtext_hex}}</h1>
-      <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=
-            {{QRtextencode}}&choe=UTF-8" title="Link to Google.com" />
-      <div class="buttons">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+      <div class='col-sm-0'>
       </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+      <div class='col-sm-6'>
+        <h1>{{ heading_title }}</h1>
+        {{ response}}
+        {% if showQR_status %}
+        <p><a href="{{ android_mobile }}">{{entry_android}}</a></p>
+        <p><a href="{{ ios_mobile }}">{{entry_ios}}</a></p>
+          <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=
+                {{QRtextencode}}&choe=UTF-8" title="Link to Google.com" />
+
+        {% endif %}
+        <h2>Testing</h2>
+        <p>{{ total_in_coin}}</p>
+        <p>{{ QRtext_hex}}</p>
+        <div class="buttons">
+          <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+        </div>
+      </div>
+      {{ content_bottom }}
+    </div>
+    {{ column_right }}
+  </div>
 </div>
 {{ footer }}
+
+<script type="text/javascript">
+
+function countInSecond(startTime,endTime) {
+  var timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+
+  // get seconds
+  var seconds = Math.round(timeDiff);
+  return seconds;
+}
+
+function call_ajax(startTime,order_id,timeout,interval){
+	var seconds=countInSecond(startTime,new Date());
+	console.log(seconds);
+	if (seconds>timeout) {
+		console.log("time out");
+		return;
+	}
+	var paid="0";
+	setTimeout(function(){
+    //Request to update db
+    jQuery.ajax({
+      url: 'index.php?route=extension/payment/nextypaysuccess/ajax_updatedb&ajax_key={{ajax_key}}',
+      dataType: 'html',
+      success: function(htmlText) {
+        //$('#product_summary').html(htmlText);
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        //alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+		//This does the ajax request
+		jQuery.ajax({
+			url: 'index.php?route=extension/payment/nextypaysuccess/ajax_get_order_status&ajax_key={{ajax_key}}',
+			type: 'POST',
+		data : {
+			'action' : 'ajax_get_order_status',
+			'order_id' : order_id
+		}
+		}).done(function ( response ) {
+			console.log(response);
+			//alert (response);
+			paid=response;
+			if (paid[0]=="1") {
+        console.log(response);
+				//alert(response);
+				var current_page= window.location.href;
+				window.location = current_page;
+				//alert (test);
+				return;
+      } else
+			{
+        return call_ajax(startTime,order_id,timeout,interval);
+			}
+		}).fail(function ( err ) {
+		})
+	}, interval*1000);
+}
+
+var showQR_status='{{showQR_status}}';
+if (showQR_status){
+
+call_ajax(new Date(),'{{order_id}}',600,5 );
+}
+
+</script>

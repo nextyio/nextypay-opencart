@@ -1,6 +1,6 @@
 <?php
 class Nextypayfunctions{
-  private static $instance;
+  public static $instance;
 
 /**
  * @param  object  $registry  Registry Object
