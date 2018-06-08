@@ -11,7 +11,7 @@
 /**
  * The controller class must extend the parent class i.e. Controller
  * The controller name must be like Controller + directory path (with first character of each folder in capital) + file name (with first character in capital)
- * For version 2.3.0.0 and upper, the name of the controller must be ControllerExtensionModuleFirstModule
+ * For version 3.0.0.0 and upper, the name of the controller must be ControllerExtensionModuleFirstModule
  */
  class ControllerExtensionPaymentNextypay extends Controller {
 
