@@ -5,7 +5,7 @@ class ModelExtensionPaymentNextypay extends Model {
   public $transactions_table_name  = "nextypay_transactions";
   public $order_in_coin_table_name  = "nextypay_order_in_coin";
 
-  public function create_order_total_in_coin_table_db(){
+  public function create_order_in_coin_table_db(){
 
     $table_name = $this->order_in_coin_table_name;
     $this->db->query("
