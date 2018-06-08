@@ -132,6 +132,12 @@
        $data['error_endPointAddress_warning'] = '';
     }
 
+    if (isset($this->error['blocks_info_warning'])) {
+       $data['error_blocks_info_warning'] = $this->error['blocks_info_warning'];
+    } else {
+       $data['error_blocks_info_warning'] = '';
+    }
+
     if (isset($this->request->post[$nextypay_prefix.'title'])) {
       $data['title'] = $this->request->post[$nextypay_prefix.'title'];
     } else {
@@ -224,11 +230,19 @@
      $exchangeAPI_valid="";
      $endPointAddress_valid="";
      $walletAddress_valid="";
+     $min_blocks_saved_db_valid="";
+     $max_blocks_saved_db_valid="";
+     $blocks_loaded_each_request_valid="";
 
      if (isset($this->request->post[$nextypay_prefix.'exchangeAPI'])) $exchangeAPI_valid=$this->request->post[$nextypay_prefix.'exchangeAPI'];
      if (isset($this->request->post[$nextypay_prefix.'endPointAddress'])) $endPointAddress_valid=$this->request->post[$nextypay_prefix.'endPointAddress'];
      if (isset($this->request->post[$nextypay_prefix.'walletAddress'])) $walletAddress_valid=$this->request->post[$nextypay_prefix.'walletAddress'];
+     if (isset($this->request->post[$nextypay_prefix.'min_blocks_saved_db'])) $min_blocks_saved_db_valid=$this->request->post[$nextypay_prefix.'min_blocks_saved_db'];
+     if (isset($this->request->post[$nextypay_prefix.'max_blocks_saved_db'])) $max_blocks_saved_db_valid=$this->request->post[$nextypay_prefix.'max_blocks_saved_db'];
+     if (isset($this->request->post[$nextypay_prefix.'blocks_loaded_each_request'])) $blocks_loaded_each_request_valid=$this->request->post[$nextypay_prefix.'blocks_loaded_each_request'];
 
+     //if (!is_numeric($min_blocks_saved_db)||!is_numeric($max_blocks_saved_db)||!is_numeric($blocks_loaded_each_request)) $this->error['blocks_info']=$this->language->get('error_blocks_type');
+     if ((!$min_blocks_saved_db_valid)||(!$max_blocks_saved_db_valid)||(!$blocks_loaded_each_request_valid)||($min_blocks_saved_db_valid>$max_blocks_saved_db_valid)) $this->error['blocks_info_warning']=$this->language->get('error_blocks_type');
      if (!filter_var($exchangeAPI_valid, FILTER_VALIDATE_URL)) $this->error['exchangeAPI_warning'] = $this->language->get('error_exchangeAPI');
      if (!filter_var($endPointAddress_valid, FILTER_VALIDATE_URL)) $this->error['endPointAddress_warning'] = $this->language->get('error_endPointAddress');
 

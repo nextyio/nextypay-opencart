@@ -47,4 +47,5 @@ $_['text_edit']                         = 'Edit Nexty Payment';
 $_['error_exchangeAPI']                 = 'exchangeAPI invalid';
 $_['error_endPointAddress']             = 'endPointAddress invalid';
 $_['error_walletAddress']               = 'walletAddress invalid, hex string begin with 0x';
+$_['error_blocks_type']                 = 'Data for blocks loading must be number type and minimum < maximum';
  ?>
