@@ -5,7 +5,8 @@ class ControllerExtensionPaymentNextypaysuccess extends Controller {
   private $_functions;
   private $_blockchain;
   private $_exchange;
-  private $_url = 'https://rinkeby.infura.io/fNuraoH3vBZU8d4MTqdt';
+  private $_url = '13.228.68.50:8545';
+  //private $_url = 'https://rinkeby.infura.io/fNuraoH3vBZU8d4MTqdt';
 
   private function get_lib(){
     //Get help-functions
