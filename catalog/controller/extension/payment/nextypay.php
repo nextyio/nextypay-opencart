@@ -32,7 +32,8 @@ class ControllerExtensionPaymentNextypay extends Controller {
 	public function confirm() {
 		$json = array();
 
-		if ($this->session->data['payment_method']['code'] == 'nextypay') {
+		if ($this->session->data['payment_method']['code'] == 'nextypay') 
+		{
 			$this->load->language('extension/payment/nextypay');
 
 			$this->load->model('checkout/order');
