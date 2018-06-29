@@ -287,8 +287,15 @@
      if (!$this->valid_int_number($blocks_loaded_each_request_valid)) $this->error['blocks_info_warning_loaded']= $this->language->get('error_blocks_loaded_invalid');
      if ($this->valid_int_number($min_blocks_saved_db_valid) && $this->valid_int_number($max_blocks_saved_db_valid) && ($min_blocks_saved_db_valid>$max_blocks_saved_db_valid)) $this->error[ 'blocks_info_warning_compare']= $this->language->get('error_blocks_compare');
      //$this->error['blocks_info_warning']=$this->language->get('error_blocks_type');
-     if (!filter_var($exchangeAPI_valid, FILTER_VALIDATE_URL)) $this->error['exchangeAPI_warning'] = $this->language->get('error_exchangeAPI');
+     //if (!filter_var($exchangeAPI_valid, FILTER_VALIDATE_URL)) $this->error['exchangeAPI_warning'] = $this->language->get('error_exchangeAPI');
      if (!filter_var($endPointAddress_valid, FILTER_VALIDATE_URL)) $this->error['endPointAddress_warning'] = $this->language->get('error_endPointAddress');
+
+     //validate Exchange API
+     $this->load->library('nextypayexchange');
+     $this->_exchange = Nextypayexchange::get_instance($this->registry);
+     $this->_exchange->set_exchangeAPI_url($exchangeAPI_valid);
+     $this->_exchange->set_store_currency_code('USD');
+     if (!$this->_exchange->ping_API()) $this->error['exchangeAPI_warning'] = $this->language->get('error_exchangeAPI');
 
 /////check valid hex string walletAddress
      if ((strlen($walletAddress_valid)>2) && ($walletAddress_valid[0]=='0') && (($walletAddress_valid[1]=='x')||($walletAddress_valid[1]=='X'))) {

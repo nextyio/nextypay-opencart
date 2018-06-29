@@ -180,6 +180,7 @@ class ControllerExtensionPaymentNextypaysuccess extends Controller {
     if (!$data['total_in_coin'])  {
       $data['total_in_coin']=$this->_exchange->coinmarketcap_exchange($data['total']);
       $placed_time=date("Y-m-d H:i:s");
+      if ($data['total_in_coin']>0)
       $this->_updatedb->insert_order_in_coin_db($data['order_id'],$data['total'],$data['total_in_coin'],$placed_time);
     }
   }
