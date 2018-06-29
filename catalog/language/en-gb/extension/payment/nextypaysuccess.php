@@ -6,7 +6,7 @@ $_['heading_title']                 = 'Your order has been placed!';
 $_['payment_waiting']               = '<p>Waiting for your payment with NTY... </p><p>Payment could be automatically completed with our mobile Apps.</p>';
 $_['payment_success']               = 'Thank you for your payment! Payment successfully.';
 $_['android_mobile_app_link']       = 'https://play.google.com/store/apps/details?id=io.nexty.wallet';
-$_['ios_mobile_app_link']           = 'https://unknown';
+$_['ios_mobile_app_link']           = 'https://nexty.io/ios';
 $_['entry_android']                 = 'Click here to download Android payment app';
 $_['entry_ios']                     = 'Click here to download IOS payment app';
 
