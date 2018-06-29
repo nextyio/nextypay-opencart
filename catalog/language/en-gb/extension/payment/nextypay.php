@@ -1,7 +1,5 @@
 <?php
-// Text
-$results = $_SERVER['HTTPS'];
-$image_url=$results."image/payment/nextypay/icon.jpeg";
+$image_url="image/payment/nextypay/icon.jpeg";
 $_['text_title']       = '<img src="'. $image_url.'"  style="width:30px">'.' Nexty Payment';
 $_['text_logo']        = '<img src="'. $image_url.'"  style="width:30px"> ';
 //$_['text_title']       = 'Nexty Payment';
