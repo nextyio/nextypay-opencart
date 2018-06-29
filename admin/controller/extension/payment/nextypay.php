@@ -260,6 +260,7 @@
 
    public function valid_int_number($number) {
      if (!$number) return false;
+     if ($number<=0) return false;
      return $number == (int)$number;
    }
 
