@@ -5,7 +5,7 @@ class ModelExtensionPaymentNextypay extends Model {
 
     $method_data = array(
       'code'     => 'nextypay',
-      'title'    => $this->language->get('text_title'),
+      'title'    => $this->language->get('text_logo').$this->config->get( 'payment_nextypay_title'),
       'sort_order' => $this->config->get('payment_nextypay_sort_order')
     );
 

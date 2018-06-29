@@ -264,7 +264,7 @@
      if (!filter_var($endPointAddress_valid, FILTER_VALIDATE_URL)) $this->error['endPointAddress_warning'] = $this->language->get('error_endPointAddress');
 
 /////check valid hex string walletAddress
-     if (($walletAddress_valid[0]=='0') && (($walletAddress_valid[1]=='x')||($walletAddress_valid[1]=='X'))) {
+     if ((strlen($walletAddress_valid)>2) && ($walletAddress_valid[0]=='0') && (($walletAddress_valid[1]=='x')||($walletAddress_valid[1]=='X'))) {
        $walletAddress_valid=substr($walletAddress_valid, 2);
      } else $walletAddress_valid="invalid";
      if (!ctype_xdigit($walletAddress_valid)) $this->error['walletAddress_warning'] = $this->language->get('error_walletAddress');
