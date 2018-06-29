@@ -118,10 +118,28 @@
        $data['error_endPointAddress_warning'] = '';
     }
 
-    if (isset($error['blocks_info_warning'])) {
-       $data['error_blocks_info_warning'] = $error['blocks_info_warning'];
+    if (isset($error['blocks_info_warning_min'])) {
+       $data['error_blocks_info_warning_min'] = $error['blocks_info_warning_min'];
     } else {
-       $data['error_blocks_info_warning'] = '';
+       $data['error_blocks_info_warning_min'] = null;
+    }
+
+    if (isset($error['blocks_info_warning_max'])) {
+       $data['error_blocks_info_warning_max'] = $error['blocks_info_warning_max'];
+    } else {
+       $data['error_blocks_info_warning_max'] = null;
+    }
+
+    if (isset($error['blocks_info_warning_loaded'])) {
+       $data['error_blocks_info_warning_loaded'] = $error['blocks_info_warning_loaded'];
+    } else {
+       $data['error_blocks_info_warning_loaded'] = null;
+    }
+
+    if (isset($error['blocks_info_warning_compare'])) {
+       $data['error_blocks_info_warning_compare'] = $error['blocks_info_warning_compare'];
+    } else {
+       $data['error_blocks_info_warning_compare'] = null;
     }
   }
 
@@ -240,6 +258,11 @@
      return true;
    }
 
+   public function valid_int_number($number) {
+     if (!$number) return false;
+     return $number == (int)$number;
+   }
+
    protected function validate() {
      $nextypay_name='payment_nextypay';
      $nextypay_prefix=$nextypay_name.'_';
@@ -258,8 +281,11 @@
      if (isset($this->request->post[$nextypay_prefix.'max_blocks_saved_db'])) $max_blocks_saved_db_valid=$this->request->post[$nextypay_prefix.'max_blocks_saved_db'];
      if (isset($this->request->post[$nextypay_prefix.'blocks_loaded_each_request'])) $blocks_loaded_each_request_valid=$this->request->post[$nextypay_prefix.'blocks_loaded_each_request'];
 
-     //if (!is_numeric($min_blocks_saved_db)||!is_numeric($max_blocks_saved_db)||!is_numeric($blocks_loaded_each_request)) $this->error['blocks_info']=$this->language->get('error_blocks_type');
-     if ((!$min_blocks_saved_db_valid)||(!$max_blocks_saved_db_valid)||(!$blocks_loaded_each_request_valid)||($min_blocks_saved_db_valid>$max_blocks_saved_db_valid)) $this->error['blocks_info_warning']=$this->language->get('error_blocks_type');
+     if (!$this->valid_int_number($min_blocks_saved_db_valid)) $this->error['blocks_info_warning_min']= $this->language->get('error_blocks_min_invalid');
+     if (!$this->valid_int_number($max_blocks_saved_db_valid)) $this->error['blocks_info_warning_max']= $this->language->get('error_blocks_max_invalid');
+     if (!$this->valid_int_number($blocks_loaded_each_request_valid)) $this->error['blocks_info_warning_loaded']= $this->language->get('error_blocks_loaded_invalid');
+     if ($this->valid_int_number($min_blocks_saved_db_valid) && $this->valid_int_number($max_blocks_saved_db_valid) && ($min_blocks_saved_db_valid>$max_blocks_saved_db_valid)) $this->error[ 'blocks_info_warning_compare']= $this->language->get('error_blocks_compare');
+     //$this->error['blocks_info_warning']=$this->language->get('error_blocks_type');
      if (!filter_var($exchangeAPI_valid, FILTER_VALIDATE_URL)) $this->error['exchangeAPI_warning'] = $this->language->get('error_exchangeAPI');
      if (!filter_var($endPointAddress_valid, FILTER_VALIDATE_URL)) $this->error['endPointAddress_warning'] = $this->language->get('error_endPointAddress');
 
