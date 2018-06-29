@@ -9,6 +9,8 @@
  * @license https://nexty.io/
  */
 
+ $_['text_nextypay']				         = '<a href="https://nexty.io" target="_blank"><img src="view/image/payment/nextypay.png" alt="Nextypay" title="Nextypay" style="width:107px; border: 1px solid #EEEEEE;" /></a>';
+
 $_['heading_title']                     = 'Nexty Payment';
 
 $_['help_status']                       = 'Enable/Disable Nexty Payment';
